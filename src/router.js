@@ -1,0 +1,96 @@
+import Vue from "vue"
+import Router from "vue-router"
+import store from "./store"
+
+
+Vue.use(Router)
+
+//静态路由
+const staticRouter = [{
+        path: '/',
+        redirect: '/login'
+    }, {
+        path: '/login',
+        name: 'login',
+        component: () =>
+            import ( /* webpackChunkName: "login" */ '@com/layout/login.vue'),
+    },
+    {
+        path: '/404',
+        component: () =>
+            import ('@com/layout/404.vue'),
+    },
+]
+
+//动态添加的路由
+const asyncRouter = [{
+        path: '/index',
+        name: 'HelloWorld',
+        component: () =>
+            import ( /* webpackChunkName: "HelloWorld" */ '@com/HelloWorld.vue'),
+    },
+    {
+        path: '/node',
+        name: 'node',
+        component: () =>
+            import ( /* webpackChunkName: "node" */ '@/views/node/index.vue')
+    },
+    {
+        path: '/newVue',
+        name: 'newVue',
+        component: () =>
+            import ( /* webpackChunkName: "newVue" */ '@/views/newVue/index.vue')
+
+    },
+    {
+        path: '/about',
+        name: 'about',
+        component: () =>
+            import ( /* webpackChunkName: "about" */ '@/views/newVue/About.vue')
+
+    },
+    {
+        path: '/interview',
+        name: 'interview',
+        component: () =>
+            import ( /* webpackChunkName: "about" */ '@/views/interview/index.vue')
+
+    },
+    { path: '*', redirect: '/404' }
+]
+let router = new Router({
+    routes: staticRouter
+})
+router.addRoutes(asyncRouter);
+/* 导航守卫next后面的代码会继续执行,next方法带参数要非常小心，它会重复进入导航守卫。所以要有判断条件使其第二次不在满足这个next条件 */
+router.beforeEach((to, from, next) => {
+    /* 有权限 */
+    if (store.state.permission) {
+        /* 登录成功了，则添加动态路由，已经add过路由就不在继续add，否则会死循环 */ //from.path === '/login' && 
+        if (store.state.addRouters.length === 0) {
+            store.commit('setRouters', asyncRouter)
+            router.addRoutes(asyncRouter);
+            /* addRouters后需必须写next(),否则可在地址栏中输入地址跳转，但是用push方法跳转的路由会去未add的路由里匹配 */
+            next(to.path)
+        } else {
+            if (to.path !== '/login' || to.paht === '/') {
+                next()
+            }
+        }
+    }
+    /* 没有权限 */
+    else {
+        if (to.path === '/login' || to.path === '/') {
+            next()
+        } else {
+            store.dispatch('checkPermission').then(() => {
+                /* 页面刷新 */
+                next(to.path)
+            }).catch(() => {
+                next('/')
+            })
+        }
+    }
+})
+export { staticRouter, asyncRouter }
+export default router
