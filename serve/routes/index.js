@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const query = require('../db/db')
 const jwt = require('jsonwebtoken')
+const Base64 = require('../plugin/base64').Base64
 
 function resFun() {}
 /* GET home page. */
@@ -12,7 +13,8 @@ router.get('/', function(req, res) {
 router.post('/login', (req, res) => {
     //取出数据库中所有的用户
     let name = req.body.name;
-    let password = req.body.password
+    let password = req.body.password //加密的密码
+    let currentPswd = Base64.decode(password) //解密的密码
     query('select * from users', null, (err, result) => {
         if (err) {
             res.json({
@@ -28,11 +30,11 @@ router.post('/login', (req, res) => {
                 message = "此用户不存在"
                 ok = false;
             } else {
-                if (user.password === password) {
+                if (user.password === currentPswd) {
                     message = "登录成功"
                     ok = true;
                     let content = { name: req.body.name }; // 要生成token的主题信息
-                    let secretOrPrivateKey = "suiyi" // 这是加密的key（密钥）
+                    let secretOrPrivateKey = 'key100' // 这是加密的key（密钥）
                     token = jwt.sign(content, secretOrPrivateKey, {
                         expiresIn: 60 * 60 * 1 // 1小时过期
                     });

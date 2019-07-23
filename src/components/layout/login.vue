@@ -33,14 +33,18 @@
 </template>
 
 <script>
+import "@/plugin/base64"
 export default {
   data() {
     return {
       form: {
-        loginName: '',
-        loginPswd: '',
+        name: '',
+        password: '',
+        encodePswd: '',
       },
     }
+  },
+  mounted() {
   },
   methods: {
     /* 设置cookie */
@@ -52,7 +56,9 @@ export default {
     },
     /* 登录 */
     signIn() {
-      this.$axios.post('/login', this.form).then(res => {
+      /* 使用base64进行一定的加密 */
+      let password = Base64.encode(this.form.password);
+      this.$axios.post('/login', { name: this.form.name, password }).then(res => {
         if (res.data.ok) {
           this.setCookie('token', res.data.token)
           this.$store.commit('setPermission', true)

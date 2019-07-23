@@ -3,54 +3,20 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var app = express();
-/* 引入body-parser模块 解析post请求 */
+var middleware = require('./middleware/index.js')
 const bodyParser = require('body-parser')
-    //解决跨域
+    //允许跨越
 app.all('*', function(req, res, next) {
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With");
-        res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
-        res.header("X-Powered-By", '3.2.1');
-        if (req.method == "OPTIONS") res.send(200); ///让options请求快速返回/
-        else next();
-    })
-    /* 中间件 */
-const jwt = require('jsonwebtoken')
-const testFun = (req, res, next) => {
-    /* 如果是登录的请求，不用验证token */
-    if (req.path === '/login') {
-        next()
-        return
-    }
-    if (req.headers.cookie) {
-        let cookieArr = req.headers.cookie.split(';');
-        let reuslt = cookieArr.map(item => {
-            let arr = item.split('=')
-            return {
-                name: arr[0].trim(), //去除两边的空格，确实会出现空格的情况，虽然我set的时候并没有空格
-                value: arr[1],
-            }
-        });
-        let tokenObj = reuslt.find(item => item.name === 'token')
-        if (typeof tokenObj === 'undefined') {
-            res.status(402).json({ error: 'token失效' });
-            return
-        }
-        let token = tokenObj.value
-        let secretOrPrivateKey = "suiyi"; // 这是加密的key（密钥） 
-        jwt.verify(token, secretOrPrivateKey, function(err, decode) {
-            if (err) { //  时间失效的时候/ 伪造的token
-                res.status(402).json({ error: 'token失效' });
-            } else {
-                next()
-            }
-        })
-    } else {
-        res.status(402).json({ error: 'token失效' });
-    }
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With");
+    res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+    res.header("X-Powered-By", '3.2.1');
+    if (req.method == "OPTIONS") res.send(200); ///让options请求快速返回/
+    else next();
+})
 
-}
-app.use(testFun);
+/* 中间件 */
+app.use(middleware.checkCookie);
 
 
 /* 路由 */

@@ -38,6 +38,10 @@
       node采用的是单线程、非阻塞式I/O。当node执行文件操作或者处理客户端发起的请求时，线程会继续向下执行，直到文件操作结束或者处理的函数处理完了再继续加入线程中，
       node的优势是性能好，在cpu一样的情况下能处理更多的请求，缺点是一旦线程中某个请求崩溃了，整个服务器就崩溃了。
     </p>
+    <h1>require 和 import的区别</h1>
+    <li>require属于CommonJS规范；import属于ES6标准语法；ES6发布的module并没有直接采用CommonJS，甚至连require都没有采用，也就是说require仍然只是node的一个私有的全局方法，module.exports也只是node私有的一个全局变量属性，跟标准没有关系。</li>
+    <li>require是运行时调用,所以理论上可以运用在代码的任何地方,在使用时，完全可以忽略模块化这个概念来使用require，仅仅把它当做一个node内置的全局函数，而import是编译时调用，所以必须放在文件开头</li>
+    <li>require是赋值过程，其实require的结果就是对象、数字、字符串、函数等，再把require的结果赋值给某个变量。import是解构过程</li>
   </div>
 </template>
 
@@ -83,4 +87,8 @@ export default {
 </script>
 
 <style>
+.interview{
+  padding: 40px;
+  font-size: 16px;
+}
 </style>
