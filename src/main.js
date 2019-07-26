@@ -12,8 +12,6 @@ Vue.config.productionTip = false
 Vue.prototype.$axios = axios
 
 
-console.log(router, 22);
-
 new Vue({
     router,
     store,

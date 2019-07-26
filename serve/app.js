@@ -1,11 +1,15 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var app = express();
-var middleware = require('./middleware/index.js')
-const bodyParser = require('body-parser')
-    //允许跨越
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const app = express();
+const bodyParser = require('body-parser');
+//引入socket.js模块，否则它不会执行
+const websocket = require('./socket.js')
+
+
+
+//允许跨越
 app.all('*', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With");
@@ -16,13 +20,8 @@ app.all('*', function(req, res, next) {
 })
 
 /* 中间件 */
+const middleware = require('./middleware/index.js')
 app.use(middleware.checkCookie);
-
-
-/* 路由 */
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var studentsRouter = require('./routes/students')
 
 
 
@@ -32,6 +31,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 /* 自带的 */
 // app.use(express.json());
 // app.use(express.urlencoded({ extended: false }));
+
+
+
+/* 路由 */
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+const studentsRouter = require('./routes/students')
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -43,8 +49,5 @@ app.use(logger('dev'));
 
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-
-const query = require('./db/db.js')
 
 module.exports = app;

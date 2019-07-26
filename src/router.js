@@ -30,6 +30,12 @@ const asyncRouter = [{
             import ( /* webpackChunkName: "node" */ '@/views/node/index.vue')
     },
     {
+        path: '/chatroom',
+        name: 'chatroom',
+        component: () =>
+            import ( /* webpackChunkName: "chatroom" */ '@/views/node/chatroom.vue')
+    },
+    {
         path: '/index',
         name: 'HelloWorld',
         component: () =>
@@ -76,7 +82,7 @@ router.beforeEach((to, from, next) => {
             store.commit('setRouters', asyncRouter)
             router.addRoutes(asyncRouter);
             /* addRouters后需必须写next(),否则可在地址栏中输入地址跳转，但是用push方法跳转的路由会去未add的路由里匹配 */
-            // next(to.path)
+            next(to.path)
         } else {
             if (to.path === '/login' || to.path === '/') {
                 next(from.path)

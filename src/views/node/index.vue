@@ -1,5 +1,7 @@
 <template>
   <div class="node">
+    <el-button size="small" @click="$router.push('/chatroom')" type="primary" class="add_chat">进入聊天室
+    </el-button>
     <el-button size="mini" @click="addStudent" type="danger">新 增</el-button>
     <el-table :data="tableData" border style="width: 100%;margin-top:10px;">
       <el-table-column prop="name" label="姓名">
@@ -69,7 +71,8 @@ export default {
         sex: "",
         age: "",
         telphone: "",
-      }
+      },
+      socket: null
     }
   },
   created() {
@@ -136,10 +139,12 @@ export default {
       this.pageNo = val
       this.getTableData()
     },
+    /* 关闭弹框 */
     close() {
       this.isReadonly = false
       this.dialogVisible = false;
     },
+    /* 保存 */
     save() {
       this.$axios.post('/students/add', this.form).then(res => {
         if (res.data.ok) {
@@ -150,7 +155,7 @@ export default {
       }).catch(err => {
         throw new Error(err)
       })
-    }
+    },
   },
 }
 </script>
@@ -174,5 +179,10 @@ export default {
   padding-top: 6px;
   height: 100%;
   text-align: right;
+}
+.add_chat {
+  position: fixed;
+  right: 100px;
+  top: 40px;
 }
 </style>
