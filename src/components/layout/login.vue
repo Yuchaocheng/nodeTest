@@ -29,6 +29,29 @@
         </el-col>
       </el-row>
     </el-form>
+    <!-- 注册弹框 -->
+    <yw-dialog :visible.sync="dialogVisible" title="新增学生信息" width="400" left="5%" top="16%">
+      <el-form :model="registerForm" ref="form" label-width="80px">
+        <el-form-item label="用户名：" prop='name'>
+          <el-input size="small" v-model="registerForm.name"></el-input>
+        </el-form-item>
+        <el-form-item label="密码：" prop='password'>
+          <el-input size="small" v-model="registerForm.password"></el-input>
+        </el-form-item>
+        <el-form-item label="头像：" prop='headImg'>
+          <el-input size="small" v-model="registerForm.headImg"></el-input>
+        </el-form-item>
+        <el-form-item label="电话：" prop='telphone'>
+          <el-input size="small" v-model="registerForm.telphone"></el-input>
+        </el-form-item>
+      </el-form>
+      <template v-slot:footer>
+        <div class="dialog-foot">
+          <el-button size="mini" type="primary" @click='save' v-if="!isReadonly">确定</el-button>
+          <el-button size="mini" @click="close">取消</el-button>
+        </div>
+      </template>
+    </yw-dialog>
   </div>
 </template>
 
@@ -40,8 +63,13 @@ export default {
       form: {
         name: '',
         password: '',
-        encodePswd: '',
       },
+      registerForm: {
+        name: '',
+        password: '',
+        headImg: '',
+        telphone: '',
+      }
     }
   },
   mounted() {

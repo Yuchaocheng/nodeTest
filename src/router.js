@@ -9,7 +9,8 @@ Vue.use(Router)
 const staticRouter = [{
         path: '/',
         redirect: '/login'
-    }, {
+    },
+    {
         path: '/login',
         name: 'login',
         component: () =>

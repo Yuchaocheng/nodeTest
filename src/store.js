@@ -5,6 +5,7 @@ import axios from "./http/axios"
 Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
+        ip: '/self', //请求ip，已在vue设置代理
         permission: false,
         routers: staticRouter,
         addRouters: []

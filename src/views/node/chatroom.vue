@@ -4,12 +4,15 @@
       <div class="show_message">
         <ul class="msgList">
           <li v-for="(item,index) in msgList" :key="index" :class="item.type">
-            <span class="nickname">{{item.nickname}}</span>
-            <p class="msg_content">
-              <i class="iconfont iconqipao-left" v-if="item.type==='userSelf'"></i>
-              <i class="iconfont iconqipao-right" v-else></i>
-              {{item.message}}
-            </p>
+            <!-- <img src='/self/images/yu.jpg' class="portrait" alt=""> -->
+            <img :src="ip+ '/images/' + item.imgPath +'.jpg'" class="portrait" alt="">
+            <div>
+              <p class="msg_content">
+                <i class="iconfont iconqipao-left" v-if="item.type==='userSelf'"></i>
+                <i class="iconfont iconqipao-right" v-else></i>
+                {{item.message}}
+              </p>
+            </div>
           </li>
         </ul>
       </div>
@@ -22,12 +25,18 @@
   </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 export default {
   data() {
     return {
       message: '',
       msgList: []
     }
+  },
+  computed: {
+    ...mapState({
+      ip: state => state.ip
+    })
   },
   created() {
     this.websocket()
@@ -106,8 +115,10 @@ export default {
         li {
           margin-bottom: 10px;
           display: flex;
-          .nickname {
-            padding: 6px;
+          .portrait {
+            border-radius: 4px;
+            width: 36px;
+            height: 36px;
             margin-right: 10px;
           }
           .msg_content {
@@ -126,7 +137,7 @@ export default {
           }
           &.userSelf {
             flex-direction: row-reverse;
-            .nickname {
+            .portrait {
               margin-left: 10px;
             }
             .msg_content {

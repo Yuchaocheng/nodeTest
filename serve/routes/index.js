@@ -33,7 +33,7 @@ router.post('/login', (req, res) => {
                 if (user.password === currentPswd) {
                     message = "登录成功"
                     ok = true;
-                    let content = { name: req.body.name }; // 要生成token的主题信息
+                    let content = { name: req.body.name, imgPath: user.headImg || '' }; // 要生成token的主题信息
                     let secretOrPrivateKey = 'key100' // 这是加密的key（密钥）
                     token = jwt.sign(content, secretOrPrivateKey, {
                         expiresIn: 60 * 60 * 1 // 1小时过期

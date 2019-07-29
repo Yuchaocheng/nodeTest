@@ -38,21 +38,23 @@ function checkUser(url) {
  * @param {String} nickname  用户昵称，广播方式为admin时可以不存在
  */
 function broadcastSend(type, message, nickname, id) {
-    console.log(id, 111);
+    let currentClient = clients.find(item => item.id === id)
     clients.forEach((client, index) => {
         if (client.ws.readyState === ws.OPEN) {
-            if (type === 'user') {
-                type = id === client.id ? 'userSelf' : type
+            console.log(client.id, 22222);
+            if (type === 'user' || type === 'userSelf') {
+                type = id === client.id ? 'userSelf' : 'user'
             }
-            client.ws.send(JSON.stringify({ type, nickname, message }))
+            client.ws.send(JSON.stringify({ type, nickname, message, imgPath: currentClient.imgPath }))
         }
     })
 }
 
 //监听连接
 wss.on('connection', (ws, req) => {
-    console.log(req.url, 22);
     let clientObj = checkUser(req.url);
+    console.log(clientObj, 2233);
+
     /* 如果没通过身份，就关闭连接 */
     if (clientObj === false) {
         ws.close()
@@ -63,19 +65,20 @@ wss.on('connection', (ws, req) => {
     clients.push({
         id: client_uuid,
         ws,
-        nickname
+        nickname,
+        imgPath: clientObj.imgPath
     });
     console.log(`client ${client_uuid} connected`);
     //关闭服务，从客户端监听列表删除
     function closeSocket() {
-        for (let i = 0; i < clients.length; i++) {
-            console.log(clients[i], 2);
-            if (clients[i].id === client_uuid) {
-                let disconnect_message = `${nickname} has disconnected`;
-                broadcastSend('admin', disconnect_message, nickname);
-                clients.splice(i, 1)
-            }
-        }
+        // for (let i = 0; i < clients.length; i++) {
+        //     console.log(clients[i], 2);
+        //     if (clients[i].id === client_uuid) {
+        //         let disconnect_message = `${nickname} has disconnected`;
+        //         broadcastSend('admin', disconnect_message, nickname);
+        //         clients.splice(i, 1)
+        //     }
+        // }
     }
     /* 监听消息 */
     ws.on('message', message => {
