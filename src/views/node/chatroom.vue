@@ -4,8 +4,7 @@
       <div class="show_message">
         <ul class="msgList">
           <li v-for="(item,index) in msgList" :key="index" :class="item.type">
-            <!-- <img src='/self/images/yu.jpg' class="portrait" alt=""> -->
-            <img :src="ip+ '/images/' + item.imgPath +'.jpg'" class="portrait" alt="">
+            <img :src="'/self/images/'+item.imgPath" class="portrait" alt="">
             <div>
               <p class="msg_content">
                 <i class="iconfont iconqipao-left" v-if="item.type==='userSelf'"></i>
