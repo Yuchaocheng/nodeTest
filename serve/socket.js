@@ -2,6 +2,7 @@ let ws = require('ws') //引入websocket模块
 let uuid = require('uuid') //引入创建唯一id模块
 let qs = require('qs');
 const jwt = require('jsonwebtoken')
+const query = require('./db/db')
 
 let socketServe = ws.Server;
 let wss = new socketServe({ port: 3100 });
@@ -53,13 +54,14 @@ function broadcastSend(type, message, nickname, id) {
 //监听连接
 wss.on('connection', (ws, req) => {
     let clientObj = checkUser(req.url);
-    console.log(clientObj, 2233);
-
     /* 如果没通过身份，就关闭连接 */
     if (clientObj === false) {
         ws.close()
         return
     }
+    /* 通过身份验证，就讲数据库的聊天记录取出发送给前端 */
+
+    console.log(clientObj, 11);
     let client_uuid = uuid.v4();
     let nickname = clientObj.name
     clients.push({
@@ -71,18 +73,26 @@ wss.on('connection', (ws, req) => {
     console.log(`client ${client_uuid} connected`);
     //关闭服务，从客户端监听列表删除
     function closeSocket() {
-        // for (let i = 0; i < clients.length; i++) {
-        //     console.log(clients[i], 2);
-        //     if (clients[i].id === client_uuid) {
-        //         let disconnect_message = `${nickname} has disconnected`;
-        //         broadcastSend('admin', disconnect_message, nickname);
-        //         clients.splice(i, 1)
-        //     }
-        // }
+        for (let i = 0; i < clients.length; i++) {
+            if (clients[i].id === client_uuid) {
+                let disconnect_message = `${nickname} has disconnected`;
+                broadcastSend('admin', disconnect_message, nickname);
+                clients.splice(i, 1)
+            }
+        }
     }
     /* 监听消息 */
     ws.on('message', message => {
-        broadcastSend('user', message, nickname, client_uuid);
+        broadcastSend('user', message, nickname, client_uuid)
+        let addSql = "insert into messages (name,message,headImg) VALUES(?,?,?);"
+        let sqlParams = [nickname, message, clientObj.imgPath]
+        query(addSql, sqlParams, (err, result) => {
+            if (err) {
+                console.log(err, 'err');
+            } else {
+                console.log('聊天记录保存成功');
+            }
+        })
     })
 
     ws.on('close', function() {

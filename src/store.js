@@ -8,7 +8,8 @@ export default new Vuex.Store({
         ip: '/self', //请求ip，已在vue设置代理
         permission: false,
         routers: staticRouter,
-        addRouters: []
+        addRouters: [],
+        userInfo: {}, //用户信息
     },
     mutations: {
         /* 设置路由 */
@@ -19,6 +20,10 @@ export default new Vuex.Store({
         /* 设置权限 */
         setPermission(state, flag) {
             state.permission = flag
+        },
+        /* 获取用户信息 */
+        getUserInfo(state, info) {
+            state.userInfo = info
         }
     },
     actions: {
@@ -28,6 +33,7 @@ export default new Vuex.Store({
                 axios.get('/check').then(res => {
                     if (res.data.ok) {
                         commit('setPermission', true)
+                        commit('getUserInfo', res.data.data)
                         resolve()
                     } else {
                         commit('setPermission', false)

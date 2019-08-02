@@ -45,9 +45,6 @@ router.post('/addUser', multipartMiddleware, async function(req, res, next) {
         res.end()
     })
 });
-/* 删除一个用户 */
-
-/* 登录 */
 
 
 module.exports = router;

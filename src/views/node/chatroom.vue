@@ -34,15 +34,27 @@ export default {
   },
   computed: {
     ...mapState({
-      ip: state => state.ip
+      ip: state => state.ip,
+      userInfo: state => state.userInfo
     })
   },
   created() {
+    this.getHistoryData()
     this.websocket()
   },
   mounted() {
   },
   methods: {
+    /* 获取历史聊天记录 */
+    getHistoryData() {
+      this.$axios('/getChatHistory').then(res => {
+        this.msgList = res.data.data.map(item => {
+          item.type = this.userInfo.name === item.name ? 'userSelf' : 'user'
+          item.imgPath = item.headImg
+          return item
+        })
+      })
+    },
     websocket() {
       let token = this.getCookie(document.cookie, 'token')
       this.socket = new WebSocket(`ws://172.16.70.72:3100?token=${token}`);

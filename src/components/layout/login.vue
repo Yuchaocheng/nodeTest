@@ -69,7 +69,6 @@ export default {
       registerForm: {
         name: '',
         password: '',
-        telphone: '',
       }
     }
   },
@@ -91,6 +90,7 @@ export default {
         if (res.data.ok) {
           this.setCookie('token', res.data.token)
           this.$store.commit('setPermission', true)
+          this.$store.commit('getUserInfo', res.data.data)
           this.$router.replace('/node')
         } else {
           this.$message.error(res.data.message)
@@ -120,7 +120,6 @@ export default {
       fd.append('file', this.fileInfo.file);
       fd.append('name', this.registerForm.name);
       fd.append('password', this.registerForm.password);
-      fd.append('telphone', this.registerForm.telphone);
       /* Content-Type'为'multipart/form-data'提交的数据被放在了Request Payload中，后端不好拿 */
       /* 设置请求的Content-type字段为application/x-www-form-urlencoded */
       this.$axios.post('/users/addUser', fd, { 'Content-Type': 'multipart/form-data' }).then(res => {
