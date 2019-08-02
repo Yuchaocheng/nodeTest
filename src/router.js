@@ -70,7 +70,6 @@ let router = new Router({
 });
 
 
-
 /* 不用登陆就能进入的路由 */
 let whiteList = staticRouter.map(item => item.path)
 

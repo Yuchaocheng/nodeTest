@@ -59,7 +59,6 @@ wss.on('connection', (ws, req) => {
         ws.close()
         return
     }
-    /* 通过身份验证，就讲数据库的聊天记录取出发送给前端 */
 
     console.log(clientObj, 11);
     let client_uuid = uuid.v4();

@@ -126,6 +126,8 @@ export default {
         if (res.data.ok) {
           this.$message.success('注册成功')
           this.state = 'login'
+        } else {
+          this.$message.warning(res.data.message)
         }
       })
     }

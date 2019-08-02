@@ -20,7 +20,7 @@ function getCookie(cookie, name) {
 }
 const checkCookie = (req, res, next) => {
     /* 如果是登录或者注册的请求，不用验证token */
-    if (req.path === '/login' || '/users/addUser') {
+    if (req.path === '/login' || req.path === '/users/addUser') {
         next()
         return
     }
