@@ -88,7 +88,6 @@ router.post('/query', (req, res) => {
 });
 /* 按id查询 */
 router.post('/findById', (req, res) => {
-    console.log(1111);
     let findSql = "select * from students where id = " + req.body.id
     query(findSql, null, (err, rows, fields) => {
         if (err) {
