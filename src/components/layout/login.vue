@@ -120,8 +120,7 @@ export default {
       fd.append('file', this.fileInfo.file);
       fd.append('name', this.registerForm.name);
       fd.append('password', this.registerForm.password);
-      /* Content-Type'为'multipart/form-data'提交的数据被放在了Request Payload中，后端不好拿 */
-      /* 设置请求的Content-type字段为application/x-www-form-urlencoded */
+      /* 设置请求的Content-type字段为multipart/form-data */
       this.$axios.post('/users/addUser', fd, { 'Content-Type': 'multipart/form-data' }).then(res => {
         if (res.data.ok) {
           this.$message.success('注册成功')

@@ -81,7 +81,7 @@ router.beforeEach((to, from, next) => {
         if (store.state.addRouters.length === 0) {
             store.commit('setRouters', asyncRouter)
             router.addRoutes(asyncRouter);
-            /* addRouters后需必须写next(),否则可在地址栏中输入地址跳转，但是用push方法跳转的路由会去未add的路由里匹配 */
+            /* addRouters后需必须写next(),否则无法保证立即跳转的路由已经add到Router中*/
             next(to.path)
         } else {
             if (to.path === '/login' || to.path === '/') {
