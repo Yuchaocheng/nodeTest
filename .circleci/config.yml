@@ -1,0 +1,37 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: node:14
+
+    branches:
+      only:
+        - main
+
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - 'ad:2d:3e:d2:a7:da:32:a7:da:00:18:62:6d:0f:50:71'
+
+      - checkout
+
+      - restore_cache:
+          keys:
+            - cache
+
+      - run:
+          name: 'install'
+
+          command: 'npm install'
+
+      - save_cache:
+          paths:
+            - node_modules
+
+          key: cache
+
+      - run:
+          name: 'build'
+
+          command: 'npm run build'
